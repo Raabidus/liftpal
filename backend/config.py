@@ -1,1 +1,0 @@
-DATABASE_URL: str = 'postgresql+psycopg2://martinkral:droMK139@localhost:5432/liftpal_dev'
