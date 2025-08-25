@@ -1,5 +1,8 @@
 from pydantic import BaseModel, Field
+
 from typing import Optional, Annotated, List
+
+from datetime import date
 
 #TODO
 
@@ -28,13 +31,22 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
+# class GetUser(UserBase):
+#     user_id: int
+
 # --- Training schemas ---
 class TrainingBase(BaseModel):
     training_id: int
     training_name: str
+    training_type: str
+    date: date
+    note: str
 
 class TrainingCreateForUser(BaseModel):
     training_name: str
+    training_type: Optional[str] = None # není povinné může být None
+    date: date
+    note: Optional[str] = None
     user_id: int
 
     class config:
@@ -42,13 +54,15 @@ class TrainingCreateForUser(BaseModel):
 
 class TrainingRead(TrainingBase):
 
-    class ConfigDict:
-        arbitrary_types_allowed = True
+    class config:
+        from_attribute = True
+    # class ConfigDict:
+    #     arbitrary_types_allowed = True
 
 class UserTrainingRead(BaseModel):
     user_id: int
     username:str
-    trainings: List[TrainingRead] = [] #list vše tréninkl daného uživatele
+    trainings: List[TrainingRead] = [] #list všech tréninků daného uživatele
 
     class ConfigDict:
         arbitrary_types_allowed = True
