@@ -1,5 +1,5 @@
 # liftpal
-
+```
 backend/
 ├── api.py           # FastAPI routes
 ├── config.py        # App configuration and settings
@@ -10,7 +10,7 @@ backend/
 ├── schemas.py       # Pydantic models (request/response validation)
 tests/
 └── test_crud.py     # Unit tests for CRUD operations
-
+```
 #### Requirements
     •	Python 3.x
     •	FastAPI
