@@ -9,11 +9,9 @@ from . import schemas
 #TODO
 #db operace
 
-# add training to user
-# copy trainng from users trainng
-# add exercise to trainng
-# delete
-# confirm function
+# get all users training - select by user_id
+# create exercise
+# post exercise to training
 
 
 
@@ -28,6 +26,7 @@ from . import schemas
 #     await db.refresh(new_user)
 #     return new_user
 
+#OK
 def create_user(db: Session, data: schemas.UserCreate):
     user_instance = models.User(**data.model_dump())
     db.add(user_instance)
@@ -35,16 +34,27 @@ def create_user(db: Session, data: schemas.UserCreate):
     db.refresh
     return user_instance
 
-def get_all_trainings(db: Session):
+#OK
+def get_trainings(db: Session):
     return db.query(models.Training).all()
 
+#OK
+def get_training(db: Session, id:int):
+    return db.query(models.Training).filter(models.Training.training_id==id).first()
+
+#OK
 def create_training(db: Session, data: schemas.TrainingCreateForUser):
-    training_instance = models.Training(**data.model_dump())
+    training_instance = models.Training(**data.model_dump()) #.model.dump() vrací Pydantic model jako dict
     db.add(training_instance)
     db.commit()
     db.refresh
     return training_instance
+# vymyslet jak udělat u optional polí (type, note) když se nevyplnít = None
+# aktuálně to v db vytváří [null]
 
+#OK
+def get_user(db: Session, id:int):
+    return db.query(models.User).filter(models.User.user_id==id).first()
 
 def create_exercise():
     pass
