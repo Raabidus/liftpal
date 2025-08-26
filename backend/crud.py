@@ -35,7 +35,7 @@ def create_user(db: Session, data: schemas.UserCreate):
     return user_instance
 
 #OK
-def get_trainings(db: Session):
+def get_trainings(db: Session) -> list:
     return db.query(models.Training).all()
 
 #OK
@@ -56,8 +56,19 @@ def create_training(db: Session, data: schemas.TrainingCreateForUser):
 def get_user(db: Session, id:int):
     return db.query(models.User).filter(models.User.user_id==id).first()
 
-def create_exercise():
-    pass
+#OK
+def create_exercise(db: Session, data: schemas.ExerciseBase):
+    exercise_instance = models.Exercise(**data.model_dump())
+    db.add(exercise_instance)
+    db.commit()
+    db.refresh
+    return exercise_instance
+
+def get_exercises(db: Session) -> list:
+    return db.query(models.Exercise).all()
+
+def get_exercise(db: Session, id:int):
+    return db.query(models.Exercise).filter(models.Exercise.exercise_id==id).first()
 
 def add_exercise_to_training():
     pass

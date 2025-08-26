@@ -72,6 +72,17 @@ class ExerciseBase(BaseModel):
     exercise_id: int
     exercise_type: str
     exercise_name: str
+    description: str
+    muscle_group: str #muslce_group by se dalo předělat, aby nebylo str ale list partii - pro budoucí filtry
+    #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
+
+class ExerciseCreate(ExerciseBase):
+    pass
+
+class ExerciseRead(ExerciseBase):
+
+    class config:
+        from_attribute = True
 
 class ExerciseAddToTraining(BaseModel):
     training_id: int
