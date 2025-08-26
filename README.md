@@ -24,7 +24,7 @@ cd LiftPal
 pipenv install
 
 #### Runnig the App
-pipenv run uvicorn backend.api:app --reload
+pipenv run python -m uvicorn backend.api:app --reload
 
 #### Database Setup
 pipenv run python backend/init_db.py

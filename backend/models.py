@@ -30,7 +30,7 @@ class Exercise(Base):
     exercise_id = Column(Integer, primary_key=True)
     exercise_name = Column(String, nullable=False)
     description = Column(String)
-    muscle_group = Column(String)
+    muscle_group = Column(String) #muslce_group by se dalo předělat, aby nebylo str ale list partii - pro budoucí filtry
     exercise_type = Column(String)
 
     training_exercises = relationship('TrainingExercise', back_populates='exercise')
