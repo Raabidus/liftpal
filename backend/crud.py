@@ -39,7 +39,7 @@ def get_trainings(db: Session) -> list:
     return db.query(models.Training).all()
 
 #OK
-def get_training(db: Session, id:int):
+def get_training(db: Session, id: int):
     return db.query(models.Training).filter(models.Training.training_id==id).first()
 
 #OK
@@ -53,7 +53,7 @@ def create_training(db: Session, data: schemas.TrainingCreateForUser):
 # aktuálně to v db vytváří [null]
 
 #OK
-def get_user(db: Session, id:int):
+def get_user(db: Session, id: int):
     return db.query(models.User).filter(models.User.user_id==id).first()
 
 #OK
@@ -63,15 +63,21 @@ def create_exercise(db: Session, data: schemas.ExerciseBase):
     db.commit()
     db.refresh
     return exercise_instance
+# přidat něco, aby v případě, že se nevyplní descriptiona a type - doplní se string něco
 
 def get_exercises(db: Session) -> list:
     return db.query(models.Exercise).all()
 
-def get_exercise(db: Session, id:int):
+def get_exercise(db: Session, id: int):
     return db.query(models.Exercise).filter(models.Exercise.exercise_id==id).first()
 
-def add_exercise_to_training():
-    pass
+# nejsem si jistý jestli bude fungovat - respektive nevím jak to uděůat
+def add_exercise_to_training(db: Session, exericise_id: int, training_id: int):
+    added_exercise = models.TrainingExercise()
+    db.add(added_exercise)
+    db.commit()
+    db.refresh
+    return added_exercise
 
 
 

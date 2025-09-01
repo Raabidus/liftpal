@@ -67,6 +67,10 @@ class UserTrainingRead(BaseModel):
     class ConfigDict:
         arbitrary_types_allowed = True
 
+#dodělat/vymyslet
+class TrainingExercise(BaseModel):
+    pass
+
 # --- Exercise Schemas ---
 class ExerciseBase(BaseModel):
     exercise_id: int
@@ -94,15 +98,7 @@ class ExerciseAddToTraining(BaseModel):
 
 
 
-# class User(BaseModel):
-#     user: str = Field(min_length=3, max_length=20)
-#     is_active: Optional[bool] = False
-#     training_ids: Optional[list[int]] = Field(default_factory=list)
 
-# # doplnit
-# class Training(BaseModel):
-#     training: str = Field(min_length=2, max_length=20)
-#     pass
 
 # # TE spíš rozdělit?
 # # udělat schema na TE jako základ a pak info k tréninku?
