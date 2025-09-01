@@ -20,7 +20,7 @@ app = FastAPI()
 # create exercise
 # add exercise to training
 
-#OK
+#funguje, ale dodělat
 @app.post("/users/", response_model=schemas.UserCreate)
 def create_new_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     return crud.create_user(db, user)
@@ -58,7 +58,7 @@ def create_new_training(training: schemas.TrainingCreateForUser, db: Session = D
 def create_new_exercise(exercise: schemas.ExerciseCreate, db: Session = Depends(database.get_db)):
     return crud.create_exercise(db, exercise)
 
-
+#OK
 @app.get("/exercises/{id}", response_model = schemas.ExerciseRead)
 def get_exercise_by_id(id: int, db: Session = Depends(database.get_db)):
     exercise_query = crud.get_exercise(db, id)
@@ -66,7 +66,11 @@ def get_exercise_by_id(id: int, db: Session = Depends(database.get_db)):
         return exercise_query
     raise HTTPException(status_code=404, detail='Blbý ID cviku')
 
+#funguje, ale dodělat
 @app.get("/exercises/", response_model= list[schemas.ExerciseRead])
 def get_all_exercises(db: Session = Depends(database.get_db)):
     return crud.get_exercises(db)
 #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
+
+#todo
+app.put("/trainigs/exercises", response_model=schemas) #vytvořit schemu pro to čtení exercise v tréninku
