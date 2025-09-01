@@ -1,6 +1,7 @@
 
 
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
 
@@ -8,11 +9,17 @@ from backend import models
 from backend import schemas
 from backend import crud
 from backend import database
+from backend.config import settings
 
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 #TODO
 
