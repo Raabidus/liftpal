@@ -72,13 +72,14 @@ def get_exercises(db: Session) -> list:
 def get_exercise(db: Session, id: int):
     return db.query(models.Exercise).filter(models.Exercise.exercise_id==id).first()
 
-# nejsem si jistý jestli bude fungovat - respektive nevím jak to uděůat
+# musí se upravit
 def add_exercise_to_trainings(
         db: Session,
         training_id,
         exercise_id,
         data: schemas.TrainingExerciseBase
     ):
+    
     new_training_exercise = models.TrainingExercise(**data.model_dump())
     db.query(models.TrainingExercise).filter_by(training_id=training_id, exercise_id=exercise_id).first()
     db.add(new_training_exercise)

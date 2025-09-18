@@ -82,7 +82,9 @@ def get_all_exercises(db: Session = Depends(database.get_db)):
     return crud.get_exercises(db)
 #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
 
-#todo - nefunguje
+"""
+přidá sice exercise k training, ale všechny mají stejný počet opakování, váhu, poznámku
+"""
 @app.post("/trainings/{training_id}/exercises/", response_model=schemas.TrainingExerciseBase)
 def add_exercises_to_training(training_id: int,
                               exercise_id: int,
@@ -94,6 +96,8 @@ def add_exercises_to_training(training_id: int,
 
 
  #vytvořit schemu pro to čtení exercise v tréninku
+
+
 
 # printne routy
 def list_routes(app):
