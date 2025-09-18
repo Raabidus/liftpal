@@ -3,6 +3,9 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi.routing import APIRoute
+
+
 from sqlalchemy.orm import Session
 
 from backend import models
@@ -79,5 +82,23 @@ def get_all_exercises(db: Session = Depends(database.get_db)):
     return crud.get_exercises(db)
 #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
 
-#todo
-app.put("/trainigs/exercises", response_model=schemas) #vytvořit schemu pro to čtení exercise v tréninku
+#todo - nefunguje
+@app.post("/trainings/{training_id}/exercises/", response_model=schemas.TrainingExerciseBase)
+def add_exercises_to_training(training_id: int,
+                              exercise_id: int,
+                              exercise_to_add: schemas.TrainingExerciseCreate,
+                              db: Session = Depends(database.get_db)
+                              ):
+    return crud.add_exercise_to_trainings(db, training_id, exercise_id, exercise_to_add)
+
+
+
+ #vytvořit schemu pro to čtení exercise v tréninku
+
+# printne routy
+def list_routes(app):
+    for route in app.routes:
+        methods = ", ".join(route.methods)
+        print(f"{methods:10s} {route.path}")
+
+list_routes(app)

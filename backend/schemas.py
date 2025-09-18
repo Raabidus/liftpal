@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 from typing import Optional, Annotated, List
 
-from datetime import date
+from datetime import date, time
 
 #TODO
 
@@ -35,12 +35,7 @@ class UserCreate(UserBase):
 #     user_id: int
 
 # --- Training schemas ---
-class TrainingBase(BaseModel):
-    training_id: int
-    training_name: str
-    training_type: str
-    date: date
-    note: str
+
 
 class TrainingCreateForUser(BaseModel):
     training_name: str
@@ -51,25 +46,6 @@ class TrainingCreateForUser(BaseModel):
 
     class config:
         from_attribute = True
-
-class TrainingRead(TrainingBase):
-
-    class config:
-        from_attribute = True
-    # class ConfigDict:
-    #     arbitrary_types_allowed = True
-
-class UserTrainingRead(BaseModel):
-    user_id: int
-    username:str
-    trainings: List[TrainingRead] = [] #list všech tréninků daného uživatele
-
-    class ConfigDict:
-        arbitrary_types_allowed = True
-
-#dodělat/vymyslet
-class TrainingExercise(BaseModel):
-    pass
 
 # --- Exercise Schemas ---
 class ExerciseBase(BaseModel):
@@ -92,6 +68,51 @@ class ExerciseAddToTraining(BaseModel):
     training_id: int
     exercise_type: str
     exercise_name: str
+
+
+class TrainingBase(BaseModel):
+    training_id: int
+    training_name: str
+    training_type: str
+    date: date
+    note: str
+    exercises: List[ExerciseRead]
+
+class TrainingRead(TrainingBase):
+
+    class config:
+        from_attribute = True
+    # class ConfigDict:
+    #     arbitrary_types_allowed = True
+
+class UserTrainingRead(BaseModel):
+    user_id: int
+    username:str
+    trainings: List[TrainingRead] = [] #list všech tréninků daného uživatele
+
+    class ConfigDict:
+        arbitrary_types_allowed = True
+
+#dodělat/vymyslet
+class TrainingExerciseBase(BaseModel):
+    training_id: int
+    exercise_id: int
+    sets: Optional[int]
+    reps: Optional[int]
+    weight: Optional[int]
+    # duration: Optional[time]
+    order: Optional[int]
+    note: Optional[str]
+
+    class config:
+        from_atribute = True
+
+class TrainingExerciseCreate(TrainingExerciseBase):
+    pass
+
+class TrainingExerciseRead(TrainingBase):
+    pass
+
 
 
 

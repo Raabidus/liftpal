@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from . import models
 from . import schemas
+from . import models
 
 
 #TODO
@@ -72,12 +73,18 @@ def get_exercise(db: Session, id: int):
     return db.query(models.Exercise).filter(models.Exercise.exercise_id==id).first()
 
 # nejsem si jistý jestli bude fungovat - respektive nevím jak to uděůat
-def add_exercise_to_training(db: Session, exericise_id: int, training_id: int):
-    added_exercise = models.TrainingExercise()
-    db.add(added_exercise)
+def add_exercise_to_trainings(
+        db: Session,
+        training_id,
+        exercise_id,
+        data: schemas.TrainingExerciseBase
+    ):
+    new_training_exercise = models.TrainingExercise(**data.model_dump())
+    db.query(models.TrainingExercise).filter_by(training_id=training_id, exercise_id=exercise_id).first()
+    db.add(new_training_exercise)
     db.commit()
-    db.refresh
-    return added_exercise
+    db.refresh(new_training_exercise)
+    return new_training_exercise
 
 
 
