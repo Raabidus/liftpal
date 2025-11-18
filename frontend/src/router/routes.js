@@ -11,6 +11,11 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
   },
+
+  {
+    path: '/users/:id',
+    component: () => import('pages/UserPage.vue')
+  },
 ]
 
 export default routes
