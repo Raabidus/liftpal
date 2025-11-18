@@ -93,7 +93,7 @@ class UserTrainingRead(BaseModel):
     class ConfigDict:
         arbitrary_types_allowed = True
 
-#dodělat/vymyslet
+#nevím jestli je správně to sets - vytvořím několik setů ale všechny mají stejné reprs, weight atp
 class TrainingExerciseBase(BaseModel):
     training_id: int
     exercise_id: int
