@@ -7,6 +7,7 @@ from fastapi.routing import APIRoute
 
 
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend import models
 from backend import schemas
@@ -42,9 +43,11 @@ def create_new_user(user: schemas.UserCreate, db: Session = Depends(database.get
 # bude se muset upravit model/schema, nebo oboje?
 
 #OK
-@app.get("/users/{id}", response_model=schemas.UserBase)
-def get_user_by_id(id: int, db: Session = Depends(database.get_db)):
-    user_query = crud.get_user(db, id)
+@app.get("/users/{user_id}", response_model=schemas.UserBase)
+async def get_user_by_id(user_id: int,
+                         db: AsyncSession = Depends(database.get_db)
+                         ) -> schemas.UserBase:
+    user_query = await crud.get_user(db, user_id)
     if user_query:
         return user_query
     raise HTTPException(status_code=404, detail="Blbý ID uživatele")
