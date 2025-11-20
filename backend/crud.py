@@ -1,6 +1,8 @@
 
 
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from . import models
 from . import schemas
@@ -54,8 +56,12 @@ def create_training(db: Session, data: schemas.TrainingCreateForUser):
 # aktuálně to v db vytváří [null]
 
 #OK
-def get_user(db: Session, id: int):
-    return db.query(models.User).filter(models.User.user_id==id).first()
+async def get_user(db: AsyncSession,
+                   user_id: int
+                   ):
+    stmt = select(models.User).where(models.User.user_id == user_id)
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
 
 #OK
 def create_exercise(db: Session, data: schemas.ExerciseBase):
