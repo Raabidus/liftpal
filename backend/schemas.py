@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict
 
 from typing import Optional, Annotated, List
 
@@ -61,8 +61,7 @@ class ExerciseCreate(ExerciseBase):
 
 class ExerciseRead(ExerciseBase):
 
-    class config:
-        from_attribute = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ExerciseAddToTraining(BaseModel):
     training_id: int
@@ -75,26 +74,16 @@ class TrainingBase(BaseModel):
     training_name: str
     training_type: str
     date: date
-    note: str
+    note: str | None
     exercises: List[ExerciseRead]
-
-class TrainingRead(TrainingBase):
-
-    class config:
-        from_attribute = True
-    # class ConfigDict:
-    #     arbitrary_types_allowed = True
-
-class UserTrainingRead(BaseModel):
-    user_id: int
-    username:str
-    trainings: List[TrainingRead] = [] #list všech tréninků daného uživatele
-
-    class ConfigDict:
-        arbitrary_types_allowed = True
 
 #nevím jestli je správně to sets - vytvořím několik setů ale všechny mají stejné reprs, weight atp
 class TrainingExerciseBase(BaseModel):
+    training_exercises_id: int
+    # exercise_type: str
+    # exercise_name: str
+    # description: Optional[str]
+    # muscle_group: Optional[str]
     training_id: int
     exercise_id: int
     sets: Optional[int]
@@ -104,14 +93,39 @@ class TrainingExerciseBase(BaseModel):
     order: Optional[int]
     note: Optional[str]
 
-    class config:
-        from_atribute = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TrainingExerciseRead(TrainingExerciseBase):
+    # training_exercise_id: int
+    # exercise_type: str
+    # exercise_name: str
+    # description: str | None
+    # muscle_group: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class TrainingRead(BaseModel):
+    training_id: int
+    training_name: str
+    training_type: str
+    date: date
+    note: str | None
+    exercises: List[TrainingExerciseRead]
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserTrainingRead(BaseModel):
+    user_id: int
+    username:str
+    trainings: List[TrainingRead] = [] #list všech tréninků daného uživatele
+
+    model_config = ConfigDict(from_attributes=True)
 
 class TrainingExerciseCreate(TrainingExerciseBase):
     pass
 
-class TrainingExerciseRead(TrainingBase):
-    pass
+
 
 
 
