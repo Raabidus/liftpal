@@ -36,9 +36,12 @@ app.add_middleware(
 # add exercise to training
 
 #funguje, ale dodělat
-@app.post("/users/", response_model=schemas.UserCreate)
-def create_new_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
-    return crud.create_user(db, user)
+@app.post("/users/", response_model=schemas.UserCreate, status_code=201)
+async def create_new_user(user: schemas.UserCreate,
+                          db: AsyncSession = Depends(database.get_db)
+                          ):
+    user = await crud.create_user(db, user)
+    return user
 # vytvořit if statement, kdyby username už existovalo
 # bude se muset upravit model/schema, nebo oboje?
 
@@ -50,20 +53,23 @@ async def get_user_by_id(user_id: int,
     user_query = await crud.get_user(db, user_id)
     if user_query:
         return user_query
-    raise HTTPException(status_code=404, detail="Blbý ID uživatele")
+    raise HTTPException(status_code=404, detail="User ID does not exists!")
+
+# get all trainings pro useless
+# @app.get("/trainings/", response_model= list[schemas.TrainingRead])
+# async def get_all_trainings(db: AsyncSession = Depends(database.get_db)):
+#     return await crud.get_trainings(db)
 
 #OK
-@app.get("/trainings/", response_model= list[schemas.TrainingRead])
-def get_all_trainings(db: Session = Depends(database.get_db)):
-    return crud.get_trainings(db)
-
-#OK
-@app.get("/trainings/{id}", response_model = schemas.TrainingRead)
-def get_training_by_id(id:int, db:Session = Depends(database.get_db)):
-    training_query = crud.get_training(db, id)
-    if training_query:
-        return training_query
-    raise HTTPException(status_code=404, detail='Blbý ID tréningu')
+@app.get("/trainings/{training_id}", response_model=schemas.TrainingRead)
+async def get_training_by_id(
+    training_id: int,
+    db: AsyncSession = Depends(database.get_db)
+    ):
+    training = await crud.get_training(db, training_id)
+    if not training:
+        raise HTTPException(status_code=404, detail="Blbý ID tréningu")
+    return training  # exercises already loaded
 
 #OK
 @app.post("/trainings/", response_model=schemas.TrainingCreateForUser)

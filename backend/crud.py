@@ -1,8 +1,10 @@
 
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+
+
 
 from . import models
 from . import schemas
@@ -30,20 +32,36 @@ from . import models
 #     return new_user
 
 #OK
-def create_user(db: Session, data: schemas.UserCreate):
+async def create_user(db: AsyncSession,
+                      data: schemas.UserCreate
+                      ):
     user_instance = models.User(**data.model_dump())
     db.add(user_instance)
-    db.commit()
-    db.refresh
+    await db.commit()
+    await db.refresh(user_instance)
     return user_instance
 
-#OK
-def get_trainings(db: Session) -> list:
-    return db.query(models.Training).all()
+# all trainings prob usless
+# async def get_trainings(db: AsyncSession)-> list[models.Training]:
+#     stmt = (
+#         # Training returned has training.exercises already loaded → Pydantic can access it without triggering new IO.
+#         select(models.Training).options(selectinload(models.Training.exercises))
+#         )
+#     result = await db.execute(stmt)
+#     return result.scalars().all()
 
 #OK
-def get_training(db: Session, id: int):
-    return db.query(models.Training).filter(models.Training.training_id==id).first()
+async def get_training(db: AsyncSession, training_id: int):
+    stmt = (
+        select(models.Training)
+        .options(
+            selectinload(models.Training.exercises)
+            )
+        .where(models.Training.training_id == training_id)
+        )
+    result = await db.execute(stmt)
+    training = result.scalars().first()
+    return training
 
 #OK
 def create_training(db: Session, data: schemas.TrainingCreateForUser):
@@ -92,7 +110,3 @@ def add_exercise_to_trainings(
     db.commit()
     db.refresh(new_training_exercise)
     return new_training_exercise
-
-
-
-
