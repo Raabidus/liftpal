@@ -44,8 +44,7 @@ class TrainingCreateForUser(BaseModel):
     note: Optional[str] = None
     user_id: int
 
-    class config:
-        from_attribute = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Exercise Schemas ---
 class ExerciseBase(BaseModel):
@@ -56,12 +55,13 @@ class ExerciseBase(BaseModel):
     muscle_group: str #muslce_group by se dalo předělat, aby nebylo str ale list partii - pro budoucí filtry
     #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
 
+    model_config = ConfigDict(from_attributes=True)
+
 class ExerciseCreate(ExerciseBase):
     pass
 
 class ExerciseRead(ExerciseBase):
-
-    model_config = ConfigDict(from_attributes=True)
+    pass
 
 class ExerciseAddToTraining(BaseModel):
     training_id: int
