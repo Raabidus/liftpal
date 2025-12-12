@@ -27,7 +27,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
-)
+    )
 
 #TODO
 
@@ -45,7 +45,7 @@ async def create_new_user(user: schemas.UserCreate,
 # vytvořit if statement, kdyby username už existovalo
 # bude se muset upravit model/schema, nebo oboje?
 
-#OK
+
 @app.get("/users/{user_id}", response_model=schemas.UserBase)
 async def get_user_by_id(user_id: int,
                          db: AsyncSession = Depends(database.get_db)
@@ -60,39 +60,46 @@ async def get_user_by_id(user_id: int,
 # async def get_all_trainings(db: AsyncSession = Depends(database.get_db)):
 #     return await crud.get_trainings(db)
 
-#OK
+
 @app.get("/trainings/{training_id}", response_model=schemas.TrainingRead)
-async def get_training_by_id(
-    training_id: int,
-    db: AsyncSession = Depends(database.get_db)
-    ):
+async def get_training_by_id(training_id: int,
+                             db: AsyncSession = Depends(database.get_db)
+                             ):
     training = await crud.get_training(db, training_id)
     if not training:
         raise HTTPException(status_code=404, detail="Blbý ID tréningu")
     return training  # exercises already loaded
 
-#OK
+
 @app.post("/trainings/", response_model=schemas.TrainingCreateForUser)
-def create_new_training(training: schemas.TrainingCreateForUser, db: Session = Depends(database.get_db)):
-    return crud.create_training(db, training)
+async def create_new_training(training: schemas.TrainingCreateForUser,
+                              db: AsyncSession = Depends(database.get_db)
+                              ):
+    new_user_training = await crud.create_training(db, training)
+    return new_user_training
 
 #OK
 @app.post("/exercises/", response_model=schemas.ExerciseCreate)
-def create_new_exercise(exercise: schemas.ExerciseCreate, db: Session = Depends(database.get_db)):
-    return crud.create_exercise(db, exercise)
+async def create_new_exercise(exercise: schemas.ExerciseCreate,
+                              db: AsyncSession = Depends(database.get_db)
+                              ):
+    new_exercise = await crud. create_exercise(db, exercise)
+    return new_exercise
 
 #OK
-@app.get("/exercises/{id}", response_model = schemas.ExerciseRead)
-def get_exercise_by_id(id: int, db: Session = Depends(database.get_db)):
-    exercise_query = crud.get_exercise(db, id)
-    if exercise_query:
-        return exercise_query
-    raise HTTPException(status_code=404, detail='Blbý ID cviku')
+@app.get("/exercises/{exercise_id}", response_model = schemas.ExerciseRead)
+async def get_exercise_by_id(exercise_id: int,
+                             db: AsyncSession = Depends(database.get_db)):
+    exercise = await crud.get_exercise(db, exercise_id)
+    if exercise is None:
+            raise HTTPException(status_code=404, detail='Blbý ID cviku')
+    return exercise
 
 #funguje, ale dodělat
 @app.get("/exercises/", response_model= list[schemas.ExerciseRead])
-def get_all_exercises(db: Session = Depends(database.get_db)):
-    return crud.get_exercises(db)
+async def get_all_exercises(db: AsyncSession = Depends(database.get_db)):
+    exercises_query = await crud.get_exercises(db)
+    return exercises_query
 #když se nevyplní type, description je Null a není string, v tu chvíli nefungije get
 
 """
@@ -102,7 +109,7 @@ přidá sice exercise k training, ale všechny mají stejný počet opakování,
 def add_exercises_to_training(training_id: int,
                               exercise_id: int,
                               exercise_to_add: schemas.TrainingExerciseCreate,
-                              db: Session = Depends(database.get_db)
+                              db: AsyncSession = Depends(database.get_db)
                               ):
     return crud.add_exercise_to_trainings(db, training_id, exercise_id, exercise_to_add)
 

@@ -1,10 +1,8 @@
 
 
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
-
 
 from . import models
 from . import schemas
@@ -51,24 +49,24 @@ async def create_user(db: AsyncSession,
 #     return result.scalars().all()
 
 #OK
-async def get_training(db: AsyncSession, training_id: int):
+async def get_training(db: AsyncSession,
+                       training_id: int):
     stmt = (
         select(models.Training)
-        .options(
-            selectinload(models.Training.exercises)
-            )
         .where(models.Training.training_id == training_id)
         )
     result = await db.execute(stmt)
     training = result.scalars().first()
     return training
 
-#OK
-def create_training(db: Session, data: schemas.TrainingCreateForUser):
+
+async def create_training(db: AsyncSession,
+                          data: schemas.TrainingCreateForUser
+                          ):
     training_instance = models.Training(**data.model_dump()) #.model.dump() vrací Pydantic model jako dict
     db.add(training_instance)
-    db.commit()
-    db.refresh
+    await db.commit()
+    await db.refresh(training_instance)
     return training_instance
 # vymyslet jak udělat u optional polí (type, note) když se nevyplnít = None
 # aktuálně to v db vytváří [null]
@@ -82,23 +80,35 @@ async def get_user(db: AsyncSession,
     return result.scalar_one_or_none()
 
 #OK
-def create_exercise(db: Session, data: schemas.ExerciseBase):
+async def create_exercise(db: AsyncSession,
+                          data: schemas.ExerciseCreate
+                          ):
     exercise_instance = models.Exercise(**data.model_dump())
     db.add(exercise_instance)
-    db.commit()
-    db.refresh
+    await db.commit()
+    await db.refresh(exercise_instance)
     return exercise_instance
 # přidat něco, aby v případě, že se nevyplní descriptiona a type - doplní se string něco
 
-def get_exercises(db: Session) -> list:
-    return db.query(models.Exercise).all()
+async def get_exercises(db: AsyncSession):
+    stmt = select(models.Exercise)
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_exercise(db: Session, id: int):
-    return db.query(models.Exercise).filter(models.Exercise.exercise_id==id).first()
+async def get_exercise(db: AsyncSession,
+                       exercise_id: int
+                       ):
+    stmt = (
+        select(models.Exercise)
+        .where(models.Exercise.exercise_id == exercise_id)
+        )
+    result = await db.execute(stmt)
+    exercise = result.scalar_one_or_none()
+    return exercise
 
 # musí se upravit
 def add_exercise_to_trainings(
-        db: Session,
+        db: AsyncSession,
         training_id,
         exercise_id,
         data: schemas.TrainingExerciseBase
