@@ -32,7 +32,7 @@ LiftPal is a work-in-progress strength training tracker. It exposes a FastAPI ba
 ### Environment & Dependencies
 
 1. Install Python 3.13 and Pipenv.
-2. Copy `backend/config.py` and update `DATABASE_URL` to point at your PostgreSQL instance (default is `postgresql+psycopg2://martinkral:droMK139@localhost:5432/liftpal_dev`).  
+2. Copy `backend/config.py` and update `DATABASE_URL` to point at your PostgreSQL instance (default is `postgresql+psycopg2://martinkral:paswd@localhost:5432/liftpal_dev`).  
    - You can also export the same DSN via `DATABASE_URL` if you refactor the config module to read from the environment.
 3. Install dependencies:
 
